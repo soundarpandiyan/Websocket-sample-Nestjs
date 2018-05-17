@@ -1,0 +1,37 @@
+<html>
+
+<head>
+    <script>
+        function connect() {
+            const socket = new WebSocket('ws://127.0.0.1:3006');
+            socket.onopen = function () {
+                console.log('Connected');
+                socket.send(JSON.stringify({
+                    type: 'events',
+                    message: 'test',
+                }));
+            };
+            socket.onmessage = function (data) {
+                console.log(data.data);
+            };
+            socket.onclose = function (e) {
+                console.log('Socket is closed. Reconnect will be attempted in 1 second.', e.reason);
+                setTimeout(function () {
+                    console.log("connecting");
+                    connect();
+                }, 100);
+            };
+
+            socket.onerror = function (err) {
+                console.error('Socket encountered error: ', err.message, 'Closing socket');
+                socket.close();
+            };
+        }
+
+        connect();
+    </script>
+</head>
+
+<body></body>
+
+</html>
